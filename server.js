@@ -3,10 +3,11 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const app = express();
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
-
 const userRouter = require("./src/routes/userRouter");
 const authRouter = require("./src/routes/authRouter");
+const verifyToken = require("./src/middleware/verifyToken");
+const authSessionsController = require("./src/controllers/authentication/authSessionsController");
+const sessionExpireInterval = 300000; //60 * 60 * 1000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -36,30 +37,26 @@ const config = {
   uri: process.env.MONGO_URI,
 };
 
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) return res.status(401).send("Access denied.");
-
-  try {
-    const tokenParts = token.split(" ");
-    if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
-      throw new Error("Invalid token format");
-    }
-    const decoded = jwt.verify(tokenParts[1], process.env.JWT_SECRET);
-    req.userId = decoded.userId;
-    next();
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(400).send("Invalid token.");
-  }
-};
-
 app.get("/", (req, res) => {
   res.send("Root Connection");
 });
 
 app.use("/user", verifyToken, userRouter);
 app.use("/auth", authRouter);
+
+function removeExpiredSessionsInterval() {
+  authSessionsController
+    .remove_expired_sessions()
+    .then(() => {
+      console.log("Expired sessions removed successfully");
+    })
+    .catch((error) => {
+      console.error("Error removing expired sessions:", error);
+    });
+}
+
+removeExpiredSessionsInterval();
+setInterval(removeExpiredSessionsInterval, sessionExpireInterval);
 
 mongoose.set("strictQuery", false);
 mongoose
