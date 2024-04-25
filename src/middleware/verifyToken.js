@@ -18,8 +18,7 @@ const verifyToken = async (req, res, next) => {
     // const decoded = jwt.verify(tokenParts[1], currentSession.Token);
     // req.userId = decoded.userId;
   } catch (error) {
-    console.error("Error:", error);
-    res.status(400).send("Invalid token.");
+    res.status(400).send({ message: "Session Expired" });
   }
 };
 

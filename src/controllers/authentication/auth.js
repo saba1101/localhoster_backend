@@ -8,7 +8,7 @@ const login_user = async (req, res) => {
     const user = await User.findOne({ Password, UserName });
     if (user) {
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "1m",
       });
       await AuthSessionController.start_session({
         Token: token,
