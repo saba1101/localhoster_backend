@@ -1,7 +1,6 @@
 const User = require("../../models/userModel");
 const AuthSessionController = require("../../controllers/authentication/authSessionsController");
 const jwt = require("jsonwebtoken");
-const formatTimestamp = require("../../utils/formatTimeStamp");
 
 const login_user = async (req, res) => {
   try {
@@ -14,7 +13,7 @@ const login_user = async (req, res) => {
       await AuthSessionController.start_session({
         Token: token,
         UserId: user._id,
-        Expire: formatTimestamp(jwt.decode(token).exp),
+        Expire: new Date(jwt.decode(token).exp * 1000), //formatTimestamp(jwt.decode(token).exp),
       });
 
       res.status(200).json({ message: `${UserName} Authorized`, token });
@@ -26,6 +25,25 @@ const login_user = async (req, res) => {
   }
 };
 
+const create_user = async (req, res) => {
+  try {
+    const { Password, UserName } = req.body;
+    if (await User.findOne({ UserName: UserName })) {
+      return res.status(500).json({ message: `UserName already exists` });
+    } else if (await User.findOne({ Password: Password })) {
+      return res.status(500).json({ message: `Try another password` });
+    } else if (await User.findOne({ Password: Password, UserName: UserName })) {
+      return res.status(500).json({ message: `User already exists` });
+    } else {
+      const user = await User.create(req.body);
+      res.status(200).json(user);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   login_user,
+  create_user,
 };
