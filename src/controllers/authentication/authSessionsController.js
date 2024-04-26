@@ -32,7 +32,7 @@ const remove_expired_sessions = async () => {
 
 const destroy_session = async (token) => {
   try {
-    await AuthSessions.deleteOne({ Token: token });
+    await AuthSessions.deleteOne(token);
     return;
   } catch (error) {
     return error;

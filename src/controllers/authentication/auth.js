@@ -27,8 +27,9 @@ const login_user = async (req, res) => {
 
 const log_out_user = async (req, res) => {
   try {
-    const token = req.body.token;
-    AuthSessionController.destroy_session(token);
+    console.log(req.body);
+    const token = req.body.Token;
+    await AuthSessionController.destroy_session({ Token: token });
     res.status(200).json({ message: "successfully logged out" });
   } catch (error) {
     res.status(500);
