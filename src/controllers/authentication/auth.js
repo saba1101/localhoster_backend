@@ -8,7 +8,7 @@ const login_user = async (req, res) => {
     const user = await User.findOne({ Password, UserName });
     if (user) {
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "1m",
+        expiresIn: "1h",
       });
       await AuthSessionController.start_session({
         Token: token,
@@ -16,12 +16,22 @@ const login_user = async (req, res) => {
         Expire: new Date(jwt.decode(token).exp * 1000), //formatTimestamp(jwt.decode(token).exp),
       });
 
-      res.status(200).json({ message: `${UserName} Authorized`, token });
+      res.status(200).json({ message: `${UserName} Authorized`, token, user });
     } else {
       res.status(401).json({ message: "Wrong UserName or Password" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+const log_out_user = async (req, res) => {
+  try {
+    const token = req.body.token;
+    AuthSessionController.destroy_session(token);
+    res.status(200).json({ message: "successfully logged out" });
+  } catch (error) {
+    res.status(500);
   }
 };
 
@@ -46,4 +56,5 @@ const create_user = async (req, res) => {
 module.exports = {
   login_user,
   create_user,
+  log_out_user,
 };
