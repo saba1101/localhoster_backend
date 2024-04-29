@@ -7,6 +7,7 @@ const userRouter = require("./src/routes/userRouter");
 const authRouter = require("./src/routes/authRouter");
 const verifyToken = require("./src/middleware/verifyToken");
 const authSessionsController = require("./src/controllers/authentication/authSessionsController");
+const productRouter = require("./src/routes/productRouter");
 const sessionExpireInterval = 300000; //60 * 60 * 1000;
 
 app.use(express.json());
@@ -42,6 +43,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", verifyToken, userRouter);
+app.use("/product", verifyToken, productRouter);
 app.use("/auth", authRouter);
 
 function removeExpiredSessionsInterval() {
