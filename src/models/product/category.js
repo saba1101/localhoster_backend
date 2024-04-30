@@ -7,7 +7,7 @@ const categoryScheme = mongoose.Schema({
   },
   Description: {
     type: String,
-    require: false,
+    require: true,
   },
 });
 
