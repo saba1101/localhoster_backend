@@ -18,6 +18,19 @@ const get_categories = async (req, res) => {
   }
 };
 
+const update_category = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = await Category.findByIdAndUpdate(id, req.body);
+    if (!category) {
+      return res.status(404).json({ message: "cannot find any category" });
+    }
+    res.status(200).json({ category });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
 const delete_category = async (req, res) => {
   try {
     const { id } = req.body;
@@ -32,4 +45,5 @@ module.exports = {
   create_category,
   get_categories,
   delete_category,
+  update_category,
 };
