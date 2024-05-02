@@ -7,6 +7,9 @@ const authSessions = mongoose.Schema({
   UserId: {
     type: String,
   },
+  UserName: {
+    type: String,
+  },
   Expire: {
     type: String,
   },

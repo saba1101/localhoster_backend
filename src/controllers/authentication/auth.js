@@ -13,6 +13,7 @@ const login_user = async (req, res) => {
       await AuthSessionController.start_session({
         Token: token,
         UserId: user._id,
+        UserName: UserName,
         Expire: new Date(jwt.decode(token).exp * 1000), //formatTimestamp(jwt.decode(token).exp),
       });
 
