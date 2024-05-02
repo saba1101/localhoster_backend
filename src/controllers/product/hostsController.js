@@ -40,12 +40,12 @@ const get_hosts = async (req, res) => {
 const update_host = async (req, res) => {
   try {
     const { id } = req.params;
-    const host = await Hosts.findByIdAndUpdate(id, req, body);
+    const host = await Hosts.findByIdAndUpdate(id, req.body);
     if (!host) {
       res.status(500).json({ message: "cannot find host" });
       return;
     } else {
-      res.status(200).json({ res });
+      res.status(200).json({ host });
     }
   } catch (error) {
     res.status(500).json({ message: error });
