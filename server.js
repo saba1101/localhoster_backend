@@ -10,7 +10,8 @@ const authSessionsController = require("./src/controllers/authentication/authSes
 const productRouter = require("./src/routes/productRouter");
 const sessionExpireInterval = 300000; //60 * 60 * 1000;
 
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(
@@ -37,7 +38,6 @@ const config = {
   port: process.env.PORT,
   uri: process.env.MONGO_URI,
 };
-
 app.get("/", (req, res) => {
   res.send("Root Connection");
 });
