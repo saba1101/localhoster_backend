@@ -26,8 +26,8 @@ const get_hosts = async (req, res) => {
         const amenityNames = amenities.map((amenity) => amenity.Title);
         return {
           ...host.toObject(),
-          Amenities: amenityNames,
-          AmenitiesIds: amenities,
+          AmenitieNames: amenityNames,
+          Amenities: amenities,
         };
       })
     );
