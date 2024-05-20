@@ -12,5 +12,6 @@ router.post("/createHost", hostsController.create_host);
 router.get("/getAll", hostsController.get_hosts);
 router.put("/updateHost/:id", hostsController.update_host);
 router.post("/deleteHost", hostsController.delete_host);
+router.get("/getHost/:id", hostsController.get_host);
 
 module.exports = router;

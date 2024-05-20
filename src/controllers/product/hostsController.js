@@ -37,6 +37,27 @@ const get_hosts = async (req, res) => {
   }
 };
 
+const get_host = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const host = await Hosts.findById(id);
+    const amenities = await Category.find({ _id: { $in: host.Amenities } });
+    const amenityNames = amenities.map((amenity) => amenity.Title);
+    const proccessedHost = {
+      ...host.toObject(),
+      AmenitieNames: amenityNames,
+      Amenities: amenities,
+    };
+    if (host) {
+      return res.status(200).json(proccessedHost);
+    } else {
+      return res.status(500).json({ message: "Cannot Find Host" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
 const update_host = async (req, res) => {
   try {
     const { id } = req.params;
@@ -67,4 +88,5 @@ module.exports = {
   get_hosts,
   update_host,
   delete_host,
+  get_host,
 };
